@@ -18,7 +18,7 @@ while true
         d1 = zeros(size(x0));
         d1(i) = 1;
         
-        avect = sort([(xMin-x0(1))/d1(1), (yMin-x0(2))/d1(2), (xMax-x0(1))/d1(1), (yMax-x0(2))/d1(2)])
+        avect = sort([(xMin-x0(1))/d1(1), (yMin-x0(2))/d1(2), (xMax-x0(1))/d1(1), (yMax-x0(2))/d1(2)]);
         alpha = fminbnd(@(a) f(x0+a*d1), avect(2), avect(3))
         
         x1 = x1+alpha*d1
