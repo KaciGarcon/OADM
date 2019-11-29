@@ -7,12 +7,12 @@ gf = @(x) [-2*sin(0.2-x(1))*cos(0.2-x(1)); 2*sin(x(2)+0.3)*cos(x(2)+0.3)];
 xMin = -1; xMax = 1;
 yMin = -1; yMax = 1;
 
-x0 = [-1; 1]
+x0 = [1; 1]
 
 d1 = [1; 0];
 d2 = [0; 1];
 
-avect = sort([(xMin-x0(1))/d2(1), (yMin-x0(2))/d2(2), (xMax-x0(1))/d2(1), (yMax-x0(2))/d2(2)])
+avect = sort([(xMin-x0(1))/d2(1), (yMin-x0(2))/d2(2), (xMax-x0(1))/d2(1), (yMax-x0(2))/d2(2)]);
 alpha = fminbnd(@(a) f(x0+a*d2), avect(2), avect(3))
 x0 = x0 + alpha*d2;
 
