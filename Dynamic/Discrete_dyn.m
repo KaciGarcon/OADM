@@ -25,154 +25,134 @@ disp(' ------------------')
 disp(tableX3)
 
 
-
 tableX2big = zeros(length(vls)*length(xs), 6);
 tableX2 = zeros(length(xs), 2);
-for col = [1, 2, 3, 4, 5, 6, 7]
-    for x2 = 1:length(xs)
-       for u2 = 1:length(vls)
-            switch col
-                case 1 % X2
-                    tableX2big((x2-1)*length(vls)+u2, col) = xs(x2);
-                case 2 % U2
-                    tableX2big((x2-1)*length(vls)+u2, col) = vls(length(xs)-u2);
-                case 3 % L2
-                    tableX2big((x2-1)*length(vls)+u2, col) = prfts(3, length(xs)-u2);
-                case 4 % X3
-                    tempval = tableX2big((x2-1)*length(vls)+u2, 1) - tableX2big((x2-1)*length(vls)+u2, 2);
-                    tableX2big((x2-1)*length(vls)+u2, col) = tempval;
-                case 5 % S3
-                    index = find(xs == tableX2big((x2-1)*length(vls)+u2, 4), 1);
-                    if ~isempty(index)
-                        tableX2big((x2-1)*length(vls)+u2, col) = tableX3(index, 2);
-                    else
-                        tableX2big((x2-1)*length(vls)+u2, col) = NaN;
-                    end
-                case 6 % G2
-                    tableX2big((x2-1)*length(vls)+u2, col) = tableX2big((x2-1)*length(vls)+u2, 3) + tableX2big((x2-1)*length(vls)+u2, 5);
-            end
+for X2 = 1:length(xs)
+    for U2 = 1:length(vls)
+        tableX2big((X2-1)*length(vls)+U2, 1) = xs(X2);
+        tableX2big((X2-1)*length(vls)+U2, 2) = vls(length(xs)-U2);
+        tableX2big((X2-1)*length(vls)+U2, 3) = prfts(3, length(xs)-U2);
+        tempval = tableX2big((X2-1)*length(vls)+U2, 1) - tableX2big((X2-1)*length(vls)+U2, 2);
+        tableX2big((X2-1)*length(vls)+U2, 4) = tempval;
+        index = find(xs == tableX2big((X2-1)*length(vls)+U2, 4), 1);
+        if ~isempty(index)
+            tableX2big((X2-1)*length(vls)+U2, 5) = tableX3(index, 2);
+        else
+            tableX2big((X2-1)*length(vls)+U2, 5) = NaN;
         end
+        tableX2big((X2-1)*length(vls)+U2, 6) = tableX2big((X2-1)*length(vls)+U2, 3) + tableX2big((X2-1)*length(vls)+U2, 5);
     end
-end
-for x2 = 1:length(xs)
-    tableX2(x2, 1) = tableX2big((x2-1)*length(vls)+1, 1);
-    maxV = nanmax(tableX2big((x2-1)*length(vls)+1:(x2)*length(vls), 6));
-    tableX2(x2, 2) = maxV;
-    [xposes, yposes] = find(tableX2big((x2-1)*length(vls)+1:(x2)*length(vls), 6) == maxV);
+    tableX2(X2, 1) = tableX2big((X2-1)*length(vls)+1, 1);
+    maxV = nanmax(tableX2big((X2-1)*length(vls)+1:(X2)*length(vls), 6));
+    tableX2(X2, 2) = maxV;
+    [xposes, yposes] = find(tableX2big((X2-1)*length(vls)+1:(X2)*length(vls), 6) == maxV);
     for i = 1:length(xposes)
         if i > size(tableX2,2)-2
             tableX2(1:length(xs), 2+i) = NaN;
         end
-        tableX2(x2, 2+i) = tableX2big((x2-1)*length(vls)+xposes(i), 2);
+        tableX2(X2, 2+i) = tableX2big((X2-1)*length(vls)+xposes(i), 2);
     end
 end
-
 disp('    X2    U2    L2    X3    S3    G2 ')
-disp('-------------------------------------')
+disp(' ------------------------------------')
 disp(tableX2big)
-
 disp('    X2    S2    U2s')
 disp(' ------------------')
 disp(tableX2)
 
 
-
 tableX1big = zeros(length(vls)*length(xs), 6);
 tableX1 = zeros(length(xs), 2);
-for col = [1, 2, 3, 4, 5, 6, 7]
-    for x1 = 1:length(xs)
-       for u2 = 1:length(vls)
-            switch col
-                case 1 % X1
-                    tableX1big((x1-1)*length(vls)+u2, col) = xs(x1);
-                case 2 % U2
-                    tableX1big((x1-1)*length(vls)+u2, col) = vls(length(xs)-u2);
-                case 3 % L2
-                    tableX1big((x1-1)*length(vls)+u2, col) = prfts(2, length(xs)-u2);
-                case 4 % X2
-                    tempval = tableX1big((x1-1)*length(vls)+u2, 1) - tableX1big((x1-1)*length(vls)+u2, 2);
-                    tableX1big((x1-1)*length(vls)+u2, col) = tempval;
-                case 5 % S3
-                    index = find(xs == tableX1big((x1-1)*length(vls)+u2, 4), 1);
-                    if ~isempty(index)
-                        tableX1big((x1-1)*length(vls)+u2, col) = tableX2(index, 2);
-                    else
-                        tableX1big((x1-1)*length(vls)+u2, col) = NaN;
-                    end
-                case 6 % G2
-                    tableX1big((x1-1)*length(vls)+u2, col) = tableX1big((x1-1)*length(vls)+u2, 3) + tableX1big((x1-1)*length(vls)+u2, 5);
-            end
+for X1 = 1:length(xs)
+    for U1 = 1:length(vls)
+        tableX1big((X1-1)*length(vls)+U1, 1) = xs(X1);
+        tableX1big((X1-1)*length(vls)+U1, 2) = vls(length(xs)-U1);
+        tableX1big((X1-1)*length(vls)+U1, 3) = prfts(2, length(xs)-U1);
+        tempval = tableX1big((X1-1)*length(vls)+U1, 1) - tableX1big((X1-1)*length(vls)+U1, 2);
+        tableX1big((X1-1)*length(vls)+U1, 4) = tempval;
+        index = find(xs == tableX1big((X1-1)*length(vls)+U1, 4), 1);
+        if ~isempty(index)
+            tableX1big((X1-1)*length(vls)+U1, 5) = tableX2(index, 2);
+        else
+            tableX1big((X1-1)*length(vls)+U1, 5) = NaN;
         end
+        tableX1big((X1-1)*length(vls)+U1, 6) = tableX1big((X1-1)*length(vls)+U1, 3) + tableX1big((X1-1)*length(vls)+U1, 5);
     end
-end
-for x1 = 1:length(xs)
-    tableX1(x1, 1) = tableX1big((x1-1)*length(vls)+1, 1);
-    maxV = nanmax(tableX1big((x1-1)*length(vls)+1:(x1)*length(vls), 6));
-    tableX1(x1, 2) = maxV;
-    [xposes, yposes] = find(tableX1big((x1-1)*length(vls)+1:(x1)*length(vls), 6) == maxV);
+    tableX1(X1, 1) = tableX1big((X1-1)*length(vls)+1, 1);
+    maxV = nanmax(tableX1big((X1-1)*length(vls)+1:(X1)*length(vls), 6));
+    tableX1(X1, 2) = maxV;
+    [xposes, yposes] = find(tableX1big((X1-1)*length(vls)+1:(X1)*length(vls), 6) == maxV);
     for i = 1:length(xposes)
         if i > size(tableX1,2)-2
             tableX1(1:length(xs), 2+i) = NaN;
         end
-        tableX1(x1, 2+i) = tableX1big((x1-1)*length(vls)+xposes(i), 2);
+        tableX1(X1, 2+i) = tableX1big((X1-1)*length(vls)+xposes(i), 2);
     end
 end
-
 disp('    X1    U1    L1    X2    S2    G1 ')
-disp('-------------------------------------')
+disp(' ------------------------------------')
 disp(tableX1big)
-
 disp('    X1    S1    U1s')
 disp(' ------------------')
 disp(tableX1)
 
 
-
 tableX0big = zeros(length(vls)*length(xs), 6);
 tableX0 = zeros(length(xs), 2);
-for col = [1, 2, 3, 4, 5, 6, 7]
-    for x0 = 1:length(xs)
-       for u2 = 1:length(vls)
-            switch col
-                case 1 % X0
-                    tableX0big((x0-1)*length(vls)+u2, col) = xs(x0);
-                case 2 % U2
-                    tableX0big((x0-1)*length(vls)+u2, col) = vls(length(xs)-u2);
-                case 3 % L2
-                    tableX0big((x0-1)*length(vls)+u2, col) = prfts(1, length(xs)-u2);
-                case 4 % X1
-                    tempval = tableX0big((x0-1)*length(vls)+u2, 1) - tableX0big((x0-1)*length(vls)+u2, 2);
-                    tableX0big((x0-1)*length(vls)+u2, col) = tempval;
-                case 5 % S3
-                    index = find(xs == tableX0big((x0-1)*length(vls)+u2, 4), 1);
-                    if ~isempty(index)
-                        tableX0big((x0-1)*length(vls)+u2, col) = tableX1(index, 2);
-                    else
-                        tableX0big((x0-1)*length(vls)+u2, col) = NaN;
-                    end
-                case 6 % G2
-                    tableX0big((x0-1)*length(vls)+u2, col) = tableX0big((x0-1)*length(vls)+u2, 3) + tableX0big((x0-1)*length(vls)+u2, 5);
-            end
+for X0 = 1:length(xs)
+    for U0 = 1:length(vls)
+        tableX0big((X0-1)*length(vls)+U0, 1) = xs(X0);
+        tableX0big((X0-1)*length(vls)+U0, 2) = vls(length(xs)-U0);
+        tableX0big((X0-1)*length(vls)+U0, 3) = prfts(1, length(xs)-U0);
+        tempval = tableX0big((X0-1)*length(vls)+U0, 1) - tableX0big((X0-1)*length(vls)+U0, 2);
+        tableX0big((X0-1)*length(vls)+U0, 4) = tempval;
+        index = find(xs == tableX0big((X0-1)*length(vls)+U0, 4), 1);
+        if ~isempty(index)
+            tableX0big((X0-1)*length(vls)+U0, 5) = tableX1(index, 2);
+        else
+            tableX0big((X0-1)*length(vls)+U0, 5) = NaN;
         end
+        tableX0big((X0-1)*length(vls)+U0, 6) = tableX0big((X0-1)*length(vls)+U0, 3) + tableX0big((X0-1)*length(vls)+U0, 5);
     end
-end
-for x0 = 1:length(xs)
-    tableX0(x0, 1) = tableX0big((x0-1)*length(vls)+1, 1);
-    maxV = nanmax(tableX0big((x0-1)*length(vls)+1:(x0)*length(vls), 6));
-    tableX0(x0, 2) = maxV;
-    [xposes, yposes] = find(tableX0big((x0-1)*length(vls)+1:(x0)*length(vls), 6) == maxV);
+    tableX0(X0, 1) = tableX0big((X0-1)*length(vls)+1, 1);
+    maxV = nanmax(tableX0big((X0-1)*length(vls)+1:(X0)*length(vls), 6));
+    tableX0(X0, 2) = maxV;
+    [xposes, yposes] = find(tableX0big((X0-1)*length(vls)+1:(X0)*length(vls), 6) == maxV);
     for i = 1:length(xposes)
         if i > size(tableX0,2)-2
             tableX0(1:length(xs), 2+i) = NaN;
         end
-        tableX0(x0, 2+i) = tableX0big((x0-1)*length(vls)+xposes(i), 2);
+        tableX0(X0, 2+i) = tableX0big((X0-1)*length(vls)+xposes(i), 2);
     end
 end
-
-disp('    X0    U0    L0    X1    S1    G0 ')
-disp('-------------------------------------')
+disp('    X0    U0    L1    X1    S2    G1 ')
+disp(' ------------------------------------')
 disp(tableX0big)
-
 disp('    X0    S0    U0s')
 disp(' ------------------')
 disp(tableX0)
+
+disp(' ====================================')
+disp(' ')
+
+X0 = 300;
+U0s = rmmissing(tableX0(tableX0(1:size(tableX0, 1), 1) == X0, 3:size(tableX0, 2)));
+for U0 = U0s
+    X1 = X0 - U0;
+    U1s = rmmissing(tableX1(tableX1(1:size(tableX1, 1), 1) == X1, 3:size(tableX1, 2)));
+    for U1 = U1s
+        X2 = X1 - U1;
+        U2s = rmmissing(tableX2(tableX2(1:size(tableX2, 1), 1) == X2, 3:size(tableX2, 2)));
+        for U2 = U2s
+            X3 = X2 - U2;
+            U3s = rmmissing(tableX3(tableX3(1:size(tableX3, 1), 1) == X3, 3:size(tableX3, 2)));
+            for U3 = U3s
+                X4 = X3 - U3;
+                fprintf('Us:      %i      %i      %i      %i\n', U0, U1, U2, U3)
+                fprintf('Xs: %i----->%i----->%i----->%i----->%i\n\n', X0, X1, X2, X3, X4)
+            end
+        end
+    end
+end
+
+disp(' ')
