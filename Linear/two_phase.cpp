@@ -4,6 +4,7 @@
 #include <string>
 using namespace std;
 
+
 string pad(double num)
 {
 	string temp = to_string(num).substr(0, 13);
@@ -13,7 +14,7 @@ string pad(double num)
 	temp.erase(temp.find_last_not_of('0') + offset, string::npos);
 	if (temp.find('-')) // dirty deeds done dirt cheap
 		temp.insert(0, " ");
-	return temp.append(9 - temp.length(), ' ');
+	return temp.append(13 - temp.length(), ' ');
 }
 
 class Simplex
@@ -68,6 +69,47 @@ public:
 		values[pos] = v;
 		return values[pos];
 	}
+	void resize(int h, int w)
+	{
+		if (h < height)
+		{
+			body.resize(h * width);
+			values.resize(h);
+			height = h;
+		}
+		if (w != width)
+		{
+			vector<double> temp = body;
+			if (w > width)
+			{
+				fill(body.begin(), body.end(), 0);
+				body.resize(w * height);
+			}
+			else if (w < width)
+			{
+				body.resize(w * height);
+				fill(body.begin(), body.end(), 0);
+			}
+			int iterw = min(w, width);
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < iterw; x++)
+				{
+					int oldpos = y * width + x;
+					int newpos = y * w + x;
+					body[newpos] = temp[oldpos];
+				}
+			}
+			coeffs.resize(w);
+			width = w;
+		}
+		if (h > height)
+		{
+			body.resize(h * width);
+			values.resize(h);
+			height = h;
+		}
+	}
 	int mx_coeff_indx() const
 	{
 		int maxcoeffI = max_element(coeffs.begin(), coeffs.end()) - coeffs.begin() + 1;
@@ -104,7 +146,7 @@ public:
 			cout << "| " << pad(val(y)) << endl;
 		}
 		for (int x = 1; x <= width + 1; x++)
-			cout << "============";
+			cout << "================";
 		cout << endl;
 		for (int x = 1; x <= width; x++)
 			cout << " " << pad(coeff(x)) << " |";
@@ -141,7 +183,7 @@ public:
 		cout << "f(X) = " << fVal << endl;
 	}
 
-	Simplex(const Simplex& obj)
+	Simplex(const Simplex & obj)
 	{
 		width = obj.width;
 		height = obj.height;
@@ -175,7 +217,7 @@ public:
 			fVal = obj.fVal - obj.val(pivY) * obj.coeff(pivX) / pivVal;
 		}
 	}
-	Simplex& operator= (const Simplex& obj)
+	Simplex & operator= (const Simplex & obj)
 	{
 		if (this != &obj)
 		{
