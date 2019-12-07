@@ -27,14 +27,14 @@ Xn = X(X==0)
 %Zeta = max(0, Lmbd)
 %Xi  = -min(0, Lmbd)
 
-lX = length(X);
+nX = length(X);
 nE = length(b);
 
 Qb = Q(:, X~=0)
 Qn = Q(:, X==0)
 
-Dlt = zeros(lX);
-for i = 1:lX
+Dlt = zeros(nX);
+for i = 1:nX
     if c(i)+Qb(i, :)*Xb <= 0
         Dlt(i, i) = 1;
     else
@@ -43,33 +43,33 @@ for i = 1:lX
 end
 Dlt
 
-negI = - eye(lX);
+negI = - eye(nX);
 
 
-smplx = zeros(lX+nE, 4*lX+3*nE);
+smplx = zeros(nX+nE, 4*nX+3*nE);
 
-smplx(1:nE,1:lX) = A;
+smplx(1:nE,1:nX) = A;
 
-smplx((nE+1):(lX+nE),1:lX) = 2*Q;
-smplx((nE+1):(lX+nE), (lX+1):(lX+nE)) = A.';
-smplx((nE+1):(lX+nE), (lX+nE+1):(lX+2*nE)) = -A.';
-smplx((nE+1):(lX+nE), (lX+2*nE+1):(2*lX+2*nE)) = negI;
-smplx((nE+1):(lX+nE), (2*lX+2*nE+1):(3*lX+2*nE)) = Dlt;
+smplx((nE+1):(nX+nE),1:nX) = 2*Q;
+smplx((nE+1):(nX+nE), (nX+1):(nX+nE)) = A.';
+smplx((nE+1):(nX+nE), (nX+nE+1):(nX+2*nE)) = -A.';
+smplx((nE+1):(nX+nE), (nX+2*nE+1):(2*nX+2*nE)) = negI;
+smplx((nE+1):(nX+nE), (2*nX+2*nE+1):(3*nX+2*nE)) = Dlt;
 
-values = zeros(lX+nE, 1);
+values = zeros(nX+nE, 1);
 values(1:nE) = b;
-values((nE+1):(lX+nE)) = -c;
+values((nE+1):(nX+nE)) = -c;
 
 mltpl = 1-2*(values < 0);
 smplx = smplx.*mltpl;
 values = values.*mltpl;
 
-Artfcl = eye(lX+nE);
-smplx(1:(lX+nE), (3*lX+2*nE+1):(4*lX+3*nE)) = Artfcl;
+Artfcl = eye(nX+nE);
+smplx(1:(nX+nE), (3*nX+2*nE+1):(4*nX+3*nE)) = Artfcl;
 
 
-coeffs = zeros(1, 4*lX+3*nE);
-coeffs(1:(3*lX+2*nE)) = sum(smplx(:, 1:(3*lX+2*nE)), 1);
+coeffs = zeros(1, 4*nX+3*nE);
+coeffs(1:(3*nX+2*nE)) = sum(smplx(:, 1:(3*nX+2*nE)), 1);
 
 %coeffs(1:lX) = X;
 %coeffs((lX+1):(lX+nE)) = Zeta;
