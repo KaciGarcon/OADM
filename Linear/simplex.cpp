@@ -4,17 +4,19 @@
 #include <string>
 using namespace std;
 
+int numlen = 5;
 
 string pad(double num)
 {
-	string temp = to_string(num).substr(0, 13);
+	string temp = to_string(num);
 	int offset = 1;
 	if (temp.find_last_not_of('0') == temp.find('.'))
 		offset = 0;
 	temp.erase(temp.find_last_not_of('0') + offset, string::npos);
 	if (temp.find('-')) // dirty deeds done dirt cheap
 		temp.insert(0, " ");
-	return temp.append(13 - temp.length(), ' ');
+	temp.append(numlen, ' ');
+	return temp.substr(0, numlen);
 }
 
 class Simplex
@@ -135,12 +137,11 @@ public:
 			int pivY = 0;
 			double minD = INFINITY;
 			for (int y = 1; y <= height; y++)
-				if (elem(y, pivX) > 0)
-					if (val(y) / elem(y, pivX) < minD)
-					{
-						pivY = y;
-						minD = val(y) / elem(y, pivX);
-					}
+				if (val(y) / elem(y, pivX) < minD && val(y) / elem(y, pivX) >= 0)
+				{
+					pivY = y;
+					minD = val(y) / elem(y, pivX);
+				}
 			return pivY;
 		}
 		return 0;
@@ -154,9 +155,7 @@ public:
 				cout << " " << pad(elem(y, x)) << " |";
 			cout << "| " << pad(val(y)) << endl;
 		}
-		for (int x = 1; x <= width + 1; x++)
-			cout << "================";
-		cout << endl;
+		cout << string((width+1)*(numlen+3), '=') << endl;
 		for (int x = 1; x <= width; x++)
 			cout << " " << pad(coeff(x)) << " |";
 		cout << "| " << pad(fVal()) << endl << endl;
