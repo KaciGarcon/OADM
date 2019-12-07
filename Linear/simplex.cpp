@@ -25,7 +25,7 @@ public:
 	vector<double> body;
 	vector<double> coeffs;
 	vector<double> values;
-	double fVal = 0;
+	double value = 0;
 
 	Simplex(int h, int w)
 	{
@@ -68,6 +68,15 @@ public:
 		int pos = y - 1;
 		values[pos] = v;
 		return values[pos];
+	}
+	double fVal() const
+	{
+		return value;
+	}
+	double fVal(double v)
+	{
+		value = v;
+		return value;
 	}
 	void resize(int h, int w)
 	{
@@ -150,7 +159,7 @@ public:
 		cout << endl;
 		for (int x = 1; x <= width; x++)
 			cout << " " << pad(coeff(x)) << " |";
-		cout << "| " << pad(fVal) << endl << endl;
+		cout << "| " << pad(fVal()) << endl << endl;
 	}
 	void vars() const
 	{
@@ -180,7 +189,7 @@ public:
 			else
 				cout << "x" << x << " = 0" << endl;
 		}
-		cout << "f(X) = " << fVal << endl;
+		cout << "f(X) = " << fVal() << endl;
 	}
 
 	Simplex(const Simplex & obj)
@@ -190,7 +199,7 @@ public:
 		body = obj.body;
 		coeffs = obj.coeffs;
 		values = obj.values;
-		fVal = obj.fVal;
+		value = obj.value;
 
 		int pivX = obj.mx_coeff_indx();
 		int pivY = obj.smallest_valdiv();
@@ -214,7 +223,7 @@ public:
 			}
 			for (int x = 1; x <= width; x++)
 				coeff(x, obj.coeff(x) - obj.elem(pivY, x) * obj.coeff(pivX) / pivVal);
-			fVal = obj.fVal - obj.val(pivY) * obj.coeff(pivX) / pivVal;
+			fVal(obj.fVal() - obj.val(pivY) * obj.coeff(pivX) / pivVal);
 		}
 	}
 	Simplex & operator= (const Simplex & obj)
@@ -229,7 +238,7 @@ public:
 			body = obj.body;
 			coeffs = obj.coeffs;
 			values = obj.values;
-			fVal = obj.fVal;
+			value = obj.value;
 		}
 		return *this;
 	}
@@ -242,32 +251,32 @@ int main()
 		//elem(y, x, wartosc);
 		prev.elem(1, 1, 2); 	prev.elem(1, 2, 7); 	prev.elem(1, 3, 1);
 		prev.elem(2, 1, 2); 	prev.elem(2, 2, 1); 	prev.elem(2, 3, 0); 	prev.elem(2, 4, 1);
-		prev.elem(3, 1, 3); 	prev.elem(1, 2, 0); 	prev.elem(3, 3, 0); 	prev.elem(2, 4, 0); 	prev.elem(3, 5, 1);
-		
+		prev.elem(3, 1, 3); 	prev.elem(3, 2, 0); 	prev.elem(3, 3, 0); 	prev.elem(3, 4, 0); 	prev.elem(3, 5, 1);
+
 		//value (y, wartosc);
 		prev.val(1, 42);
 		prev.val(2, 12);
 		prev.val(3, 15);
-		
+
 		//coeff(x, wartosc);
 		prev.coeff(1, 1); 	prev.coeff(2, 2);
-		
+
 		// fVal (wartosc)
 		prev.fVal(0);
 	}
-	
+
 	prev.table();
 	prev.vars();
 	
 	while (true)
 	{
 		Simplex current(prev);
-		if (current.fVal >= prev.fVal)
+		if (current.fVal() >= prev.fVal())
 			break;
 		current.table();
 		current.vars();
 		prev = current;
 	}
-	
+
 	return 0;
 }
