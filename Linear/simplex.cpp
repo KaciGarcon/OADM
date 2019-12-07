@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-int numlen = 5;
+int numlen = 8;
 
 string pad(double num)
 {
@@ -121,6 +121,32 @@ public:
 			height = h;
 		}
 	}
+	double xval(int x) const
+	{
+		int yPos = 0;
+		if (coeff(x) == 0)
+		{
+			for (int t = 1; t <= height; t++)
+			{
+				yPos = 0;
+				for (int y = 1; y <= height; y++)
+				{
+					yPos = t;
+					if (!(y == t && elem(y, x) == 1 || y != t && elem(y, x) == 0))
+					{
+						yPos = 0;
+						break;
+					}
+				}
+				if (yPos)
+					break;
+			}
+		}
+		if (yPos)
+			return val(yPos); // uuuh dirty
+		else
+			return 0;
+	}
 	int mx_coeff_indx() const
 	{
 		int maxcoeffI = max_element(coeffs.begin(), coeffs.end()) - coeffs.begin() + 1;
@@ -164,33 +190,12 @@ public:
 	{
 		for (int x = 1; x <= width; x++)
 		{
-			int yPos = 0;
-			if (coeff(x) == 0)
-			{
-				for (int t = 1; t <= height; t++)
-				{
-					yPos = 0;
-					for (int y = 1; y <= height; y++)
-					{
-						yPos = t;
-						if (!(y == t && elem(y, x) == 1 || y != t && elem(y, x) == 0))
-						{
-							yPos = 0;
-							break;
-						}
-					}
-					if (yPos)
-						break;
-				}
-			}
-			if (yPos)
-				cout << "x" << x << " = " << val(yPos) << endl; // uuuh dirty
-			else
-				cout << "x" << x << " = 0" << endl;
+			cout << "x" << x << " = " << xval(x) << endl;
 		}
 		cout << "f(X) = " << fVal() << endl;
 	}
 
+	
 	Simplex(const Simplex & obj)
 	{
 		width = obj.width;
