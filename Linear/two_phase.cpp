@@ -25,7 +25,7 @@ public:
 	vector<double> body;
 	vector<double> coeffs;
 	vector<double> values;
-	double fVal = 0;
+	double value = 0;
 
 	Simplex(int h, int w)
 	{
@@ -68,6 +68,15 @@ public:
 		int pos = y - 1;
 		values[pos] = v;
 		return values[pos];
+	}
+	double fVal() const
+	{
+		return value;
+	}
+	double fVal(double v)
+	{
+		value = v;
+		return value;
 	}
 	void resize(int h, int w)
 	{
@@ -150,7 +159,7 @@ public:
 		cout << endl;
 		for (int x = 1; x <= width; x++)
 			cout << " " << pad(coeff(x)) << " |";
-		cout << "| " << pad(fVal) << endl << endl;
+		cout << "| " << pad(fVal()) << endl << endl;
 	}
 	void vars() const
 	{
@@ -180,7 +189,7 @@ public:
 			else
 				cout << "x" << x << " = 0" << endl;
 		}
-		cout << "f(X) = " << fVal << endl;
+		cout << "f(X) = " << fVal() << endl;
 	}
 
 	Simplex(const Simplex & obj)
@@ -190,7 +199,7 @@ public:
 		body = obj.body;
 		coeffs = obj.coeffs;
 		values = obj.values;
-		fVal = obj.fVal;
+		value = obj.value;
 
 		int pivX = obj.mx_coeff_indx();
 		int pivY = obj.smallest_valdiv();
@@ -214,7 +223,7 @@ public:
 			}
 			for (int x = 1; x <= width; x++)
 				coeff(x, obj.coeff(x) - obj.elem(pivY, x) * obj.coeff(pivX) / pivVal);
-			fVal = obj.fVal - obj.val(pivY) * obj.coeff(pivX) / pivVal;
+			fVal(obj.fVal() - obj.val(pivY) * obj.coeff(pivX) / pivVal);
 		}
 	}
 	Simplex & operator= (const Simplex & obj)
@@ -229,7 +238,7 @@ public:
 			body = obj.body;
 			coeffs = obj.coeffs;
 			values = obj.values;
-			fVal = obj.fVal;
+			value = obj.value;
 		}
 		return *this;
 	}
@@ -251,11 +260,9 @@ int main()
 
 		//coeff(x, wartosc);
 		prev.coeff(1, 2); prev.coeff(3, -1); prev.coeff(5, -1);
-		//prev.coeff(1, 3); prev.coeff(2, 2); prev.coeff(3, -1); prev.coeff(4, 1); prev.coeff(5, -1);
 
 		// fVal (wartosc)
-		prev.fVal = 3;
-		//prev.fVal = 9;
+		prev.fVal(3);
 	}
 
 	prev.table();
@@ -264,24 +271,22 @@ int main()
 	while (true)
 	{
 		Simplex current(prev);
-		if (current.coeffs == prev.coeffs)
+		if (current.fVal() == prev.fVal())
 			break;
 		current.table();
 		current.vars();
 		prev = current;
 	}
 
-	cout << endl << endl << "HAHA GOTEM BETCH" << endl << endl;
+	cout << endl << endl << "Second phase:" << endl << endl;
 
-	prev.elem(1, 6, 0); prev.elem(1, 7, 0);
-	prev.elem(2, 6, 0); prev.elem(2, 7, 0);
-	prev.elem(3, 6, 0); prev.elem(3, 7, 0);
+	prev.resize(3, 5);
 
-	prev.coeff(1, 0); prev.coeff(2, 0); prev.coeff(3, 0); prev.coeff(4, 0); prev.coeff(5, 0); prev.coeff(6, 0); prev.coeff(7, 0);
+	prev.coeff(1, 0); prev.coeff(2, 0); prev.coeff(3, 0); prev.coeff(4, 0); prev.coeff(5, 0);
 
 	prev.coeff(3, -1.5); prev.coeff(5, 2.5);
 
-	prev.fVal = -3.5;
+	prev.fVal(-3.5);
 
 
 	prev.table();
@@ -290,7 +295,7 @@ int main()
 	while (true)
 	{
 		Simplex current(prev);
-		if (current.coeffs == prev.coeffs)
+		if (current.fVal() == prev.fVal())
 			break;
 		current.table();
 		current.vars();
@@ -299,6 +304,3 @@ int main()
 
 	return 0;
 }
-
-
-/**/
