@@ -261,7 +261,7 @@ int main()
 		//coeff(x, wartosc);
 		prev.coeff(1, 1); 	prev.coeff(2, 2);
 
-		// fVal (wartosc)
+		//fVal(wartosc);
 		prev.fVal(0);
 	}
 
