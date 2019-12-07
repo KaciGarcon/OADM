@@ -4,17 +4,19 @@
 #include <string>
 using namespace std;
 
+int numlen = 5;
 
 string pad(double num)
 {
-	string temp = to_string(num).substr(0, 13);
+	string temp = to_string(num);
 	int offset = 1;
 	if (temp.find_last_not_of('0') == temp.find('.'))
 		offset = 0;
 	temp.erase(temp.find_last_not_of('0') + offset, string::npos);
 	if (temp.find('-')) // dirty deeds done dirt cheap
 		temp.insert(0, " ");
-	return temp.append(13 - temp.length(), ' ');
+	temp.append(numlen, ' ');
+	return temp.substr(0, numlen);
 }
 
 class Simplex
@@ -119,13 +121,46 @@ public:
 			height = h;
 		}
 	}
+	double xval(int x) const
+	{
+		int yPos = 0;
+		if (coeff(x) == 0)
+		{
+			for (int t = 1; t <= height; t++)
+			{
+				yPos = 0;
+				for (int y = 1; y <= height; y++)
+				{
+					yPos = t;
+					if (!(y == t && elem(y, x) == 1 || y != t && elem(y, x) == 0))
+					{
+						yPos = 0;
+						break;
+					}
+				}
+				if (yPos)
+					break;
+			}
+		}
+		if (yPos)
+			return val(yPos); // uuuh dirty
+		else
+			return 0;
+	}
 	int mx_coeff_indx() const
 	{
-		int maxcoeffI = max_element(coeffs.begin(), coeffs.end()) - coeffs.begin() + 1;
-		double maxcoeffV = coeff(maxcoeffI);
-		if (maxcoeffV > 0)
-			return maxcoeffI;
-		return 0;
+		int nX = width - 3 * height;
+		int nE = 4 * height - width;
+
+		int pivX = 0;
+		double maxE = -INFINITY;
+		for (int x = 1; x <= height; x++)
+		if (coeff(x) > maxE && coeff(x) >= 0)
+		{
+			pivX = x;
+			maxE = coeff(x);
+		}
+		return pivX;
 	}
 	int smallest_valdiv() const
 	{
@@ -135,12 +170,11 @@ public:
 			int pivY = 0;
 			double minD = INFINITY;
 			for (int y = 1; y <= height; y++)
-				if (elem(y, pivX) > 0)
-					if (val(y) / elem(y, pivX) < minD)
-					{
-						pivY = y;
-						minD = val(y) / elem(y, pivX);
-					}
+				if (val(y) / elem(y, pivX) < minD && val(y) / elem(y, pivX) >= 0)
+				{
+					pivY = y;
+					minD = val(y) / elem(y, pivX);
+				}
 			return pivY;
 		}
 		return 0;
@@ -154,9 +188,7 @@ public:
 				cout << " " << pad(elem(y, x)) << " |";
 			cout << "| " << pad(val(y)) << endl;
 		}
-		for (int x = 1; x <= width + 1; x++)
-			cout << "================";
-		cout << endl;
+		cout << string((width+1)*(numlen+3), '=') << endl;
 		for (int x = 1; x <= width; x++)
 			cout << " " << pad(coeff(x)) << " |";
 		cout << "| " << pad(fVal()) << endl << endl;
@@ -165,33 +197,12 @@ public:
 	{
 		for (int x = 1; x <= width; x++)
 		{
-			int yPos = 0;
-			if (coeff(x) == 0)
-			{
-				for (int t = 1; t <= height; t++)
-				{
-					yPos = 0;
-					for (int y = 1; y <= height; y++)
-					{
-						yPos = t;
-						if (!(y == t && elem(y, x) == 1 || y != t && elem(y, x) == 0))
-						{
-							yPos = 0;
-							break;
-						}
-					}
-					if (yPos)
-						break;
-				}
-			}
-			if (yPos)
-				cout << "x" << x << " = " << val(yPos) << endl; // uuuh dirty
-			else
-				cout << "x" << x << " = 0" << endl;
+			cout << "x" << x << " = " << xval(x) << endl;
 		}
 		cout << "f(X) = " << fVal() << endl;
 	}
 
+	
 	Simplex(const Simplex & obj)
 	{
 		width = obj.width;
@@ -246,28 +257,20 @@ public:
 
 int main()
 {
-	Simplex prev(3, 5);
+	Simplex prev(6, 22);
 	{
-		//elem(y, x, wartosc);
-		prev.elem(1, 1, 2); 	prev.elem(1, 2, 7); 	prev.elem(1, 3, 1);
-		prev.elem(2, 1, 2); 	prev.elem(2, 2, 1); 	prev.elem(2, 3, 0); 	prev.elem(2, 4, 1);
-		prev.elem(3, 1, 3); 	prev.elem(3, 2, 0); 	prev.elem(3, 3, 0); 	prev.elem(3, 4, 0); 	prev.elem(3, 5, 1);
-
-		//value (y, wartosc);
-		prev.val(1, 42);
-		prev.val(2, 12);
-		prev.val(3, 15);
-
-		//coeff(x, wartosc);
-		prev.coeff(1, 1); 	prev.coeff(2, 2);
-
-		//fVal(wartosc);
-		prev.fVal(0);
+		prev.elem(1, 1, 2.000000);   	prev.elem(1, 2, 3.000000);   	prev.elem(1, 3, 1.000000);   	prev.elem(1, 4, 0.000000);   	prev.elem(1, 5, 0.000000);   	prev.elem(1, 6, 0.000000);   	prev.elem(1, 7, 0.000000);   	prev.elem(1, 8, 0.000000);   	prev.elem(1, 9, 0.000000);   	prev.elem(1, 10, 0.000000);   	prev.elem(1, 11, 0.000000);   	prev.elem(1, 12, 0.000000);   	prev.elem(1, 13, 0.000000);   	prev.elem(1, 14, 0.000000);   	prev.elem(1, 15, 0.000000);   	prev.elem(1, 16, 0.000000);   	prev.elem(1, 17, 1.000000);   	prev.elem(1, 18, 0.000000);   	prev.elem(1, 19, 0.000000);   	prev.elem(1, 20, 0.000000);   	prev.elem(1, 21, 0.000000);   	prev.elem(1, 22, 0.000000);   	prev.val(1, 6.000000);
+		prev.elem(2, 1, 2.000000);   	prev.elem(2, 2, 1.000000);   	prev.elem(2, 3, 0.000000);   	prev.elem(2, 4, 1.000000);   	prev.elem(2, 5, 0.000000);   	prev.elem(2, 6, 0.000000);   	prev.elem(2, 7, 0.000000);   	prev.elem(2, 8, 0.000000);   	prev.elem(2, 9, 0.000000);   	prev.elem(2, 10, 0.000000);   	prev.elem(2, 11, 0.000000);   	prev.elem(2, 12, 0.000000);   	prev.elem(2, 13, 0.000000);   	prev.elem(2, 14, 0.000000);   	prev.elem(2, 15, 0.000000);   	prev.elem(2, 16, 0.000000);   	prev.elem(2, 17, 0.000000);   	prev.elem(2, 18, 1.000000);   	prev.elem(2, 19, 0.000000);   	prev.elem(2, 20, 0.000000);   	prev.elem(2, 21, 0.000000);   	prev.elem(2, 22, 0.000000);   	prev.val(2, 4.000000);
+		prev.elem(3, 1, -2.000000);   	prev.elem(3, 2, 0.000000);   	prev.elem(3, 3, 0.000000);   	prev.elem(3, 4, 0.000000);   	prev.elem(3, 5, 2.000000);   	prev.elem(3, 6, 2.000000);   	prev.elem(3, 7, -2.000000);   	prev.elem(3, 8, -2.000000);   	prev.elem(3, 9, -1.000000);   	prev.elem(3, 10, -0.000000);   	prev.elem(3, 11, -0.000000);   	prev.elem(3, 12, -0.000000);   	prev.elem(3, 13, 1.000000);   	prev.elem(3, 14, 0.000000);   	prev.elem(3, 15, 0.000000);   	prev.elem(3, 16, 0.000000);   	prev.elem(3, 17, 0.000000);   	prev.elem(3, 18, 0.000000);   	prev.elem(3, 19, 1.000000);   	prev.elem(3, 20, 0.000000);   	prev.elem(3, 21, 0.000000);   	prev.elem(3, 22, 0.000000);   	prev.val(3, 2.000000);
+		prev.elem(4, 1, -0.000000);   	prev.elem(4, 2, -0.000000);   	prev.elem(4, 3, -0.000000);   	prev.elem(4, 4, -0.000000);   	prev.elem(4, 5, -3.000000);   	prev.elem(4, 6, -1.000000);   	prev.elem(4, 7, 3.000000);   	prev.elem(4, 8, 1.000000);   	prev.elem(4, 9, 0.000000);   	prev.elem(4, 10, 1.000000);   	prev.elem(4, 11, 0.000000);   	prev.elem(4, 12, 0.000000);   	prev.elem(4, 13, -0.000000);   	prev.elem(4, 14, 1.000000);   	prev.elem(4, 15, -0.000000);   	prev.elem(4, 16, -0.000000);   	prev.elem(4, 17, 0.000000);   	prev.elem(4, 18, 0.000000);   	prev.elem(4, 19, 0.000000);   	prev.elem(4, 20, 1.000000);   	prev.elem(4, 21, 0.000000);   	prev.elem(4, 22, 0.000000);   	prev.val(4, 1.000000);
+		prev.elem(5, 1, 0.000000);   	prev.elem(5, 2, 0.000000);   	prev.elem(5, 3, 0.000000);   	prev.elem(5, 4, 0.000000);   	prev.elem(5, 5, 1.000000);   	prev.elem(5, 6, 0.000000);   	prev.elem(5, 7, -1.000000);   	prev.elem(5, 8, -0.000000);   	prev.elem(5, 9, -0.000000);   	prev.elem(5, 10, -0.000000);   	prev.elem(5, 11, -1.000000);   	prev.elem(5, 12, -0.000000);   	prev.elem(5, 13, 0.000000);   	prev.elem(5, 14, 0.000000);   	prev.elem(5, 15, 1.000000);   	prev.elem(5, 16, 0.000000);   	prev.elem(5, 17, 0.000000);   	prev.elem(5, 18, 0.000000);   	prev.elem(5, 19, 0.000000);   	prev.elem(5, 20, 0.000000);   	prev.elem(5, 21, 1.000000);   	prev.elem(5, 22, 0.000000);   	prev.val(5, -0.000000);
+		prev.elem(6, 1, 0.000000);   	prev.elem(6, 2, 0.000000);   	prev.elem(6, 3, 0.000000);   	prev.elem(6, 4, 0.000000);   	prev.elem(6, 5, 0.000000);   	prev.elem(6, 6, 1.000000);   	prev.elem(6, 7, -0.000000);   	prev.elem(6, 8, -1.000000);   	prev.elem(6, 9, -0.000000);   	prev.elem(6, 10, -0.000000);   	prev.elem(6, 11, -0.000000);   	prev.elem(6, 12, -1.000000);   	prev.elem(6, 13, 0.000000);   	prev.elem(6, 14, 0.000000);   	prev.elem(6, 15, 0.000000);   	prev.elem(6, 16, 1.000000);   	prev.elem(6, 17, 0.000000);   	prev.elem(6, 18, 0.000000);   	prev.elem(6, 19, 0.000000);   	prev.elem(6, 20, 0.000000);   	prev.elem(6, 21, 0.000000);   	prev.elem(6, 22, 1.000000);   	prev.val(6, -0.000000);
+		prev.coeff(1, 2.000000);		prev.coeff(2, 4.000000);		prev.coeff(3, 1.000000);		prev.coeff(4, 1.000000);		prev.coeff(5, 0.000000);		prev.coeff(6, 2.000000);		prev.coeff(7, 0.000000);		prev.coeff(8, -2.000000);		prev.coeff(9, -1.000000);		prev.coeff(10, 1.000000);		prev.coeff(11, -1.000000);		prev.coeff(12, -1.000000);		prev.coeff(13, 1.000000);		prev.coeff(14, 1.000000);		prev.coeff(15, 1.000000);		prev.coeff(16, 1.000000);		prev.coeff(17, 0.000000);		prev.coeff(18, 0.000000);		prev.coeff(19, 0.000000);		prev.coeff(20, 0.000000);		prev.coeff(21, 0.000000);		prev.coeff(22, 0.000000);		prev.fVal(13.000000);
 	}
 
 	prev.table();
 	prev.vars();
-	
+
 	while (true)
 	{
 		Simplex current(prev);
