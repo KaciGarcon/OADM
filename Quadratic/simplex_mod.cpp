@@ -154,27 +154,27 @@ public:
 		int pivX = 0;
 		double maxE = -INFINITY;
 		for (int x = 1; x <= height; x++)
-		if (coeff(x) > maxE)
-		{
-			// from 1st X to last X and if corresp. Mu is 0
-			if ((x >= 1 && x <= nX) && xval(x + nX + 2 * nE) == 0) 
+			if (coeff(x) > maxE)
 			{
-				pivX = x;
-				maxE = coeff(x);
+				// from 1st X to last X and if corresp. Mu is 0
+				if ((x >= 1 && x <= nX) && xval(x + nX + 2 * nE) == 0)
+				{
+					pivX = x;
+					maxE = coeff(x);
+				}
+				// from 1st Mu to last Mu and if corresp. X is 0
+				else if ((x >= (nX + 2 * nE + 1) && x <= (2 * nX + 2 * nE)) && xval(x - nX - 2 * nE) == 0)
+				{
+					pivX = x;
+					maxE = coeff(x);
+				}
+				// from 1st Zeta to last Xi and from 1st U to last A
+				else if ((x >= (nX + 1) && x <= (nX + 2 * nE)) || (x >= (2 * nX + 2 * nE + 1)))
+				{
+					pivX = x;
+					maxE = coeff(x);
+				}
 			}
-			// from 1st Mu to last Mu and if corresp. X is 0
-			else if ((x >= (nX + 2 * nE + 1) && x <= (2 * nX + 2 * nE)) && xval(x - nX - 2 * nE) == 0)
-			{
-				pivX = x;
-				maxE = coeff(x);
-			}
-			// from 1st Zeta to last Xi and from 1st U to last A
-			else if ((x >= (nX + 1) && x <= (nX + 2 * nE)) || (x >= (2 * nX + 2 * nE + 1)))
-			{
-				pivX = x;
-				maxE = coeff(x);
-			}
-		}
 		return pivX;
 	}
 	int smallest_valdiv() const
@@ -197,13 +197,14 @@ public:
 	void table() const
 	{
 		cout << endl;
+		cout << mx_coeff_indx() << " " << smallest_valdiv() << endl;
 		for (int y = 1; y <= height; y++)
 		{
 			for (int x = 1; x <= width; x++)
 				cout << " " << pad(elem(y, x)) << " |";
 			cout << "| " << pad(val(y)) << endl;
 		}
-		cout << string((width+1)*(numlen+3), '=') << endl;
+		cout << string((width + 1) * (numlen + 3), '=') << endl;
 		for (int x = 1; x <= width; x++)
 			cout << " " << pad(coeff(x)) << " |";
 		cout << "| " << pad(fVal()) << endl << endl;
@@ -222,13 +223,12 @@ public:
 			cout << "Mu" << x << " = " << xval(nX + 2 * nE + x) << endl;
 		for (int x = 1; x <= nX; x++)
 			cout << "U" << x << "  = " << xval(2 * nX + 2 * nE + x) << endl;
-		for (int x = 1; x <= nX+nE; x++)
+		for (int x = 1; x <= nX + nE; x++)
 			cout << "Ar" << x << " = " << xval(3 * nX + 2 * nE + x) << endl;
 		cout << "f(X) = " << fVal() << endl;
 	}
 
-	
-	Simplex(const Simplex & obj)
+	Simplex(const Simplex& obj)
 	{
 		width = obj.width;
 		height = obj.height;
@@ -262,7 +262,7 @@ public:
 			fVal(obj.fVal() - obj.val(pivY) * obj.coeff(pivX) / pivVal);
 		}
 	}
-	Simplex & operator= (const Simplex & obj)
+	Simplex& operator= (const Simplex& obj)
 	{
 		if (this != &obj)
 		{
@@ -282,28 +282,32 @@ public:
 
 int main()
 {
-	Simplex prev(6, 22);
+	Simplex prev(7, 26);
 	{
-		prev.elem(1, 1, 1.000000);   	prev.elem(1, 2, 2.000000);   	prev.elem(1, 3, 1.000000);   	prev.elem(1, 4, 0.000000);   	prev.elem(1, 5, 0.000000);   	prev.elem(1, 6, 0.000000);   	prev.elem(1, 7, 0.000000);   	prev.elem(1, 8, 0.000000);   	prev.elem(1, 9, 0.000000);   	prev.elem(1, 10, 0.000000);   	prev.elem(1, 11, 0.000000);   	prev.elem(1, 12, 0.000000);   	prev.elem(1, 13, 0.000000);   	prev.elem(1, 14, 0.000000);   	prev.elem(1, 15, 0.000000);   	prev.elem(1, 16, 0.000000);   	prev.elem(1, 17, 1.000000);   	prev.elem(1, 18, 0.000000);   	prev.elem(1, 19, 0.000000);   	prev.elem(1, 20, 0.000000);   	prev.elem(1, 21, 0.000000);   	prev.elem(1, 22, 0.000000);   	prev.val(1, 8.000000);
-		prev.elem(2, 1, 2.000000);   	prev.elem(2, 2, 3.000000);   	prev.elem(2, 3, 0.000000);   	prev.elem(2, 4, 1.000000);   	prev.elem(2, 5, 0.000000);   	prev.elem(2, 6, 0.000000);   	prev.elem(2, 7, 0.000000);   	prev.elem(2, 8, 0.000000);   	prev.elem(2, 9, 0.000000);   	prev.elem(2, 10, 0.000000);   	prev.elem(2, 11, 0.000000);   	prev.elem(2, 12, 0.000000);   	prev.elem(2, 13, 0.000000);   	prev.elem(2, 14, 0.000000);   	prev.elem(2, 15, 0.000000);   	prev.elem(2, 16, 0.000000);   	prev.elem(2, 17, 0.000000);   	prev.elem(2, 18, 1.000000);   	prev.elem(2, 19, 0.000000);   	prev.elem(2, 20, 0.000000);   	prev.elem(2, 21, 0.000000);   	prev.elem(2, 22, 0.000000);   	prev.val(2, 2.000000);
-		prev.elem(3, 1, 2.000000);   	prev.elem(3, 2, -0.000000);   	prev.elem(3, 3, -0.000000);   	prev.elem(3, 4, -0.000000);   	prev.elem(3, 5, -1.000000);   	prev.elem(3, 6, -2.000000);   	prev.elem(3, 7, 1.000000);   	prev.elem(3, 8, 2.000000);   	prev.elem(3, 9, 1.000000);   	prev.elem(3, 10, 0.000000);   	prev.elem(3, 11, 0.000000);   	prev.elem(3, 12, 0.000000);   	prev.elem(3, 13, -1.000000);   	prev.elem(3, 14, -0.000000);   	prev.elem(3, 15, -0.000000);   	prev.elem(3, 16, -0.000000);   	prev.elem(3, 17, 0.000000);   	prev.elem(3, 18, 0.000000);   	prev.elem(3, 19, 1.000000);   	prev.elem(3, 20, 0.000000);   	prev.elem(3, 21, 0.000000);   	prev.elem(3, 22, 0.000000);   	prev.val(3, 2.000000);
-		prev.elem(4, 1, 0.000000);   	prev.elem(4, 2, 2.000000);   	prev.elem(4, 3, 0.000000);   	prev.elem(4, 4, 0.000000);   	prev.elem(4, 5, 2.000000);   	prev.elem(4, 6, 3.000000);   	prev.elem(4, 7, -2.000000);   	prev.elem(4, 8, -3.000000);   	prev.elem(4, 9, -0.000000);   	prev.elem(4, 10, -1.000000);   	prev.elem(4, 11, -0.000000);   	prev.elem(4, 12, -0.000000);   	prev.elem(4, 13, 0.000000);   	prev.elem(4, 14, 1.000000);   	prev.elem(4, 15, 0.000000);   	prev.elem(4, 16, 0.000000);   	prev.elem(4, 17, 0.000000);   	prev.elem(4, 18, 0.000000);   	prev.elem(4, 19, 0.000000);   	prev.elem(4, 20, 1.000000);   	prev.elem(4, 21, 0.000000);   	prev.elem(4, 22, 0.000000);   	prev.val(4, -0.000000);
-		prev.elem(5, 1, 0.000000);   	prev.elem(5, 2, 0.000000);   	prev.elem(5, 3, 0.000000);   	prev.elem(5, 4, 0.000000);   	prev.elem(5, 5, 1.000000);   	prev.elem(5, 6, 0.000000);   	prev.elem(5, 7, -1.000000);   	prev.elem(5, 8, -0.000000);   	prev.elem(5, 9, -0.000000);   	prev.elem(5, 10, -0.000000);   	prev.elem(5, 11, -1.000000);   	prev.elem(5, 12, -0.000000);   	prev.elem(5, 13, 0.000000);   	prev.elem(5, 14, 0.000000);   	prev.elem(5, 15, 1.000000);   	prev.elem(5, 16, 0.000000);   	prev.elem(5, 17, 0.000000);   	prev.elem(5, 18, 0.000000);   	prev.elem(5, 19, 0.000000);   	prev.elem(5, 20, 0.000000);   	prev.elem(5, 21, 1.000000);   	prev.elem(5, 22, 0.000000);   	prev.val(5, -0.000000);
-		prev.elem(6, 1, 0.000000);   	prev.elem(6, 2, 0.000000);   	prev.elem(6, 3, 0.000000);   	prev.elem(6, 4, 0.000000);   	prev.elem(6, 5, 0.000000);   	prev.elem(6, 6, 1.000000);   	prev.elem(6, 7, -0.000000);   	prev.elem(6, 8, -1.000000);   	prev.elem(6, 9, -0.000000);   	prev.elem(6, 10, -0.000000);   	prev.elem(6, 11, -0.000000);   	prev.elem(6, 12, -1.000000);   	prev.elem(6, 13, 0.000000);   	prev.elem(6, 14, 0.000000);   	prev.elem(6, 15, 0.000000);   	prev.elem(6, 16, 1.000000);   	prev.elem(6, 17, 0.000000);   	prev.elem(6, 18, 0.000000);   	prev.elem(6, 19, 0.000000);   	prev.elem(6, 20, 0.000000);   	prev.elem(6, 21, 0.000000);   	prev.elem(6, 22, 1.000000);   	prev.val(6, -0.000000);
-		prev.coeff(1, 5.000000);		prev.coeff(2, 7.000000);		prev.coeff(3, 1.000000);		prev.coeff(4, 1.000000);		prev.coeff(5, 2.000000);		prev.coeff(6, 2.000000);		prev.coeff(7, -2.000000);		prev.coeff(8, -2.000000);		prev.coeff(9, 1.000000);		prev.coeff(10, -1.000000);		prev.coeff(11, -1.000000);		prev.coeff(12, -1.000000);		prev.coeff(13, -1.000000);		prev.coeff(14, 1.000000);		prev.coeff(15, 1.000000);		prev.coeff(16, 1.000000);		prev.coeff(17, 0.000000);		prev.coeff(18, 0.000000);		prev.coeff(19, 0.000000);		prev.coeff(20, 0.000000);		prev.coeff(21, 0.000000);		prev.coeff(22, 0.000000);		prev.fVal(12.000000);
+		prev.elem(1, 1, 2.000000);   	prev.elem(1, 2, -2.000000);   	prev.elem(1, 3, 3.000000);   	prev.elem(1, 4, 1.000000);   	prev.elem(1, 5, 0.000000);   	prev.elem(1, 6, 0.000000);   	prev.elem(1, 7, 0.000000);   	prev.elem(1, 8, 0.000000);   	prev.elem(1, 9, 0.000000);   	prev.elem(1, 10, 0.000000);   	prev.elem(1, 11, 0.000000);   	prev.elem(1, 12, 0.000000);   	prev.elem(1, 13, 0.000000);   	prev.elem(1, 14, 0.000000);   	prev.elem(1, 15, 0.000000);   	prev.elem(1, 16, 0.000000);   	prev.elem(1, 17, 0.000000);   	prev.elem(1, 18, 0.000000);   	prev.elem(1, 19, 0.000000);   	prev.elem(1, 20, 1.000000);   	prev.elem(1, 21, 0.000000);   	prev.elem(1, 22, 0.000000);   	prev.elem(1, 23, 0.000000);   	prev.elem(1, 24, 0.000000);   	prev.elem(1, 25, 0.000000);   	prev.elem(1, 26, 0.000000);   	prev.val(1, 12.000000);
+		prev.elem(2, 1, -2.000000);   	prev.elem(2, 2, 2.000000);   	prev.elem(2, 3, -1.000000);   	prev.elem(2, 4, -0.000000);   	prev.elem(2, 5, -1.000000);   	prev.elem(2, 6, -0.000000);   	prev.elem(2, 7, -0.000000);   	prev.elem(2, 8, -0.000000);   	prev.elem(2, 9, -0.000000);   	prev.elem(2, 10, -0.000000);   	prev.elem(2, 11, -0.000000);   	prev.elem(2, 12, -0.000000);   	prev.elem(2, 13, -0.000000);   	prev.elem(2, 14, -0.000000);   	prev.elem(2, 15, -0.000000);   	prev.elem(2, 16, -0.000000);   	prev.elem(2, 17, -0.000000);   	prev.elem(2, 18, -0.000000);   	prev.elem(2, 19, -0.000000);   	prev.elem(2, 20, 0.000000);   	prev.elem(2, 21, 1.000000);   	prev.elem(2, 22, 0.000000);   	prev.elem(2, 23, 0.000000);   	prev.elem(2, 24, 0.000000);   	prev.elem(2, 25, 0.000000);   	prev.elem(2, 26, 0.000000);   	prev.val(2, 4.000000);
+		prev.elem(3, 1, -2.000000);   	prev.elem(3, 2, 2.000000);   	prev.elem(3, 3, -0.000000);   	prev.elem(3, 4, -0.000000);   	prev.elem(3, 5, -0.000000);   	prev.elem(3, 6, 2.000000);   	prev.elem(3, 7, 2.000000);   	prev.elem(3, 8, -2.000000);   	prev.elem(3, 9, -2.000000);   	prev.elem(3, 10, -1.000000);   	prev.elem(3, 11, -0.000000);   	prev.elem(3, 12, -0.000000);   	prev.elem(3, 13, -0.000000);   	prev.elem(3, 14, -0.000000);   	prev.elem(3, 15, -1.000000);   	prev.elem(3, 16, 0.000000);   	prev.elem(3, 17, 0.000000);   	prev.elem(3, 18, 0.000000);   	prev.elem(3, 19, 0.000000);   	prev.elem(3, 20, 0.000000);   	prev.elem(3, 21, 0.000000);   	prev.elem(3, 22, 1.000000);   	prev.elem(3, 23, 0.000000);   	prev.elem(3, 24, 0.000000);   	prev.elem(3, 25, 0.000000);   	prev.elem(3, 26, 0.000000);   	prev.val(3, 2.000000);
+		prev.elem(4, 1, -2.000000);   	prev.elem(4, 2, 2.000000);   	prev.elem(4, 3, 0.000000);   	prev.elem(4, 4, 0.000000);   	prev.elem(4, 5, 0.000000);   	prev.elem(4, 6, 2.000000);   	prev.elem(4, 7, 2.000000);   	prev.elem(4, 8, -2.000000);   	prev.elem(4, 9, -2.000000);   	prev.elem(4, 10, 0.000000);   	prev.elem(4, 11, 1.000000);   	prev.elem(4, 12, 0.000000);   	prev.elem(4, 13, 0.000000);   	prev.elem(4, 14, 0.000000);   	prev.elem(4, 15, -0.000000);   	prev.elem(4, 16, -1.000000);   	prev.elem(4, 17, -0.000000);   	prev.elem(4, 18, -0.000000);   	prev.elem(4, 19, -0.000000);   	prev.elem(4, 20, 0.000000);   	prev.elem(4, 21, 0.000000);   	prev.elem(4, 22, 0.000000);   	prev.elem(4, 23, 1.000000);   	prev.elem(4, 24, 0.000000);   	prev.elem(4, 25, 0.000000);   	prev.elem(4, 26, 0.000000);   	prev.val(4, 2.000000);
+		prev.elem(5, 1, -0.000000);   	prev.elem(5, 2, -0.000000);   	prev.elem(5, 3, -2.000000);   	prev.elem(5, 4, -0.000000);   	prev.elem(5, 5, -0.000000);   	prev.elem(5, 6, 3.000000);   	prev.elem(5, 7, 1.000000);   	prev.elem(5, 8, -3.000000);   	prev.elem(5, 9, -1.000000);   	prev.elem(5, 10, -0.000000);   	prev.elem(5, 11, -0.000000);   	prev.elem(5, 12, -1.000000);   	prev.elem(5, 13, -0.000000);   	prev.elem(5, 14, -0.000000);   	prev.elem(5, 15, 0.000000);   	prev.elem(5, 16, 0.000000);   	prev.elem(5, 17, 1.000000);   	prev.elem(5, 18, 0.000000);   	prev.elem(5, 19, 0.000000);   	prev.elem(5, 20, 0.000000);   	prev.elem(5, 21, 0.000000);   	prev.elem(5, 22, 0.000000);   	prev.elem(5, 23, 0.000000);   	prev.elem(5, 24, 1.000000);   	prev.elem(5, 25, 0.000000);   	prev.elem(5, 26, 0.000000);   	prev.val(5, 0.000000);
+		prev.elem(6, 1, -0.000000);   	prev.elem(6, 2, -0.000000);   	prev.elem(6, 3, -0.000000);   	prev.elem(6, 4, -0.000000);   	prev.elem(6, 5, -0.000000);   	prev.elem(6, 6, 1.000000);   	prev.elem(6, 7, 0.000000);   	prev.elem(6, 8, -1.000000);   	prev.elem(6, 9, -0.000000);   	prev.elem(6, 10, -0.000000);   	prev.elem(6, 11, -0.000000);   	prev.elem(6, 12, -0.000000);   	prev.elem(6, 13, -1.000000);   	prev.elem(6, 14, -0.000000);   	prev.elem(6, 15, 0.000000);   	prev.elem(6, 16, 0.000000);   	prev.elem(6, 17, 0.000000);   	prev.elem(6, 18, 1.000000);   	prev.elem(6, 19, 0.000000);   	prev.elem(6, 20, 0.000000);   	prev.elem(6, 21, 0.000000);   	prev.elem(6, 22, 0.000000);   	prev.elem(6, 23, 0.000000);   	prev.elem(6, 24, 0.000000);   	prev.elem(6, 25, 1.000000);   	prev.elem(6, 26, 0.000000);   	prev.val(6, 0.000000);
+		prev.elem(7, 1, -0.000000);   	prev.elem(7, 2, -0.000000);   	prev.elem(7, 3, -0.000000);   	prev.elem(7, 4, -0.000000);   	prev.elem(7, 5, -0.000000);   	prev.elem(7, 6, 0.000000);   	prev.elem(7, 7, 1.000000);   	prev.elem(7, 8, -0.000000);   	prev.elem(7, 9, -1.000000);   	prev.elem(7, 10, -0.000000);   	prev.elem(7, 11, -0.000000);   	prev.elem(7, 12, -0.000000);   	prev.elem(7, 13, -0.000000);   	prev.elem(7, 14, -1.000000);   	prev.elem(7, 15, 0.000000);   	prev.elem(7, 16, 0.000000);   	prev.elem(7, 17, 0.000000);   	prev.elem(7, 18, 0.000000);   	prev.elem(7, 19, 1.000000);   	prev.elem(7, 20, 0.000000);   	prev.elem(7, 21, 0.000000);   	prev.elem(7, 22, 0.000000);   	prev.elem(7, 23, 0.000000);   	prev.elem(7, 24, 0.000000);   	prev.elem(7, 25, 0.000000);   	prev.elem(7, 26, 1.000000);   	prev.val(7, 0.000000);
+		prev.coeff(1, -4.000000);		prev.coeff(2, 4.000000);		prev.coeff(3, 0.000000);		prev.coeff(4, 1.000000);		prev.coeff(5, -1.000000);		prev.coeff(6, 8.000000);		prev.coeff(7, 6.000000);		prev.coeff(8, -8.000000);		prev.coeff(9, -6.000000);		prev.coeff(10, -1.000000);		prev.coeff(11, 1.000000);		prev.coeff(12, -1.000000);		prev.coeff(13, -1.000000);		prev.coeff(14, -1.000000);		prev.coeff(15, -1.000000);		prev.coeff(16, -1.000000);		prev.coeff(17, 1.000000);		prev.coeff(18, 1.000000);		prev.coeff(19, 1.000000);		prev.coeff(20, 0.000000);		prev.coeff(21, 0.000000);		prev.coeff(22, 0.000000);		prev.coeff(23, 0.000000);		prev.coeff(24, 0.000000);		prev.coeff(25, 0.000000);		prev.coeff(26, 0.000000);		prev.fVal(20.000000);
 	}
 
 	prev.table();
 	prev.vars();
+	cout << prev.mx_coeff_indx() << endl;
+	cout << prev.smallest_valdiv() << endl;
 
 	while (true)
 	{
+		
 		Simplex current(prev);
-		if (current.fVal() >= prev.fVal())
-			break;
-		current.table();
-		current.vars();
 		prev = current;
+		prev.table();
+		prev.vars();
+		if (current.fVal() == prev.fVal())
+			break;
 	}
 
 	return 0;
