@@ -93,13 +93,13 @@ fprintf('\tSimplex prev(%i, %i);\n\t{\n', size(smplx, 1), size(smplx, 2))
 for y = 1:size(smplx, 1)
     fprintf('\t\t')
     for x = 1:size(smplx, 2)
-        fprintf('prev.elem(%i, %i, %f); 	', y, x, smplx(y, x))
+        fprintf('prev.elem(%i, %i, %f);   \t', y, x, smplx(y, x))
     end
     fprintf('prev.val(%i, %f);\n', y, values(y))
 end
 fprintf('\t\t')
 for x = 1:size(smplx, 2)
-    fprintf('prev.coeff(%i, %f); 	', x, coeffs(x))
+    fprintf('prev.coeff(%i, %f);\t\t', x, coeffs(x))
 end
 fprintf('prev.fVal(%f);\n\t}\n', fVal)
 %}
