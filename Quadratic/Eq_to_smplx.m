@@ -2,20 +2,21 @@ clear all
 clc
 
 A = [
-    1 2 1 0
-    2 3 0 1
+    2 -2 3 1 0
+    2 -2 1 0 1
     ]
 
-X = [0 0 8 2].'
+X = [0 0 0 12 -4].'
 
 Q = [
-    -2 0 0 0
-     0 2 0 0
-     0 0 0 0
-     0 0 0 0
+     2 -2  0  0  0
+    -2  2  0  0  0
+     0  0  2  0  0
+     0  0  0  0  0
+     0  0  0  0  0
     ]
 
-c = [2 0 0 0].'
+c = [2 -2 0 0 0].'
 
 % END OF INPUTTING %
 
@@ -46,7 +47,7 @@ smplx = zeros(nX+nE, 4*nX+3*nE);
 
 smplx(1:nE,1:nX) = A;
 
-smplx((nE+1):(nX+nE),1:nX) = Q;
+smplx((nE+1):(nX+nE),1:nX) = -Q;
 smplx((nE+1):(nX+nE), (nX+1):(nX+nE)) = A.';
 smplx((nE+1):(nX+nE), (nX+nE+1):(nX+2*nE)) = -A.';
 smplx((nE+1):(nX+nE), (nX+2*nE+1):(2*nX+2*nE)) = negI;
