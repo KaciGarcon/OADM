@@ -151,14 +151,29 @@ public:
 	{
 		int nX = width - 3 * height;
 		int nE = 4 * height - width;
-
 		int pivX = 0;
 		double maxE = -INFINITY;
 		for (int x = 1; x <= height; x++)
-		if (coeff(x) > maxE && coeff(x) >= 0)
+		if (coeff(x) > maxE)
 		{
-			pivX = x;
-			maxE = coeff(x);
+			// from 1st X to last X and if corresp. Mu is 0
+			if ((x >= 1 && x <= nX) && xval(x + nX + 2 * nE) == 0) 
+			{
+				pivX = x;
+				maxE = coeff(x);
+			}
+			// from 1st Mu to last Mu and if corresp. X is 0
+			else if ((x >= (nX + 2 * nE + 1) && x <= (2 * nX + 2 * nE)) && xval(x - nX - 2 * nE) == 0)
+			{
+				pivX = x;
+				maxE = coeff(x);
+			}
+			// from 1st Zeta to last Xi and from 1st U to last A
+			else if ((x >= (nX + 1) && x <= (nX + 2 * nE)) || (x >= (2 * nX + 2 * nE + 1)))
+			{
+				pivX = x;
+				maxE = coeff(x);
+			}
 		}
 		return pivX;
 	}
@@ -195,10 +210,20 @@ public:
 	}
 	void vars() const
 	{
-		for (int x = 1; x <= width; x++)
-		{
-			cout << "x" << x << " = " << xval(x) << endl;
-		}
+		int nX = width - 3 * height;
+		int nE = 4 * height - width;
+		for (int x = 1; x <= nX; x++)
+			cout << "x" << x << "  = " << xval(x) << endl;
+		for (int x = 1; x <= nE; x++)
+			cout << "Zt" << x << " = " << xval(nX + x) << endl;
+		for (int x = 1; x <= nE; x++)
+			cout << "Xi" << x << " = " << xval(nX + nE + x) << endl;
+		for (int x = 1; x <= nX; x++)
+			cout << "Mu" << x << " = " << xval(nX + 2 * nE + x) << endl;
+		for (int x = 1; x <= nX; x++)
+			cout << "U" << x << "  = " << xval(2 * nX + 2 * nE + x) << endl;
+		for (int x = 1; x <= nX+nE; x++)
+			cout << "Ar" << x << " = " << xval(3 * nX + 2 * nE + x) << endl;
 		cout << "f(X) = " << fVal() << endl;
 	}
 
