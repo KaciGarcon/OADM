@@ -136,20 +136,30 @@ disp(' ====================================')
 disp(' ')
 
 X0 = 300;
-U0s = rmmissing(tableX0(tableX0(1:size(tableX0, 1), 1) == X0, 3:size(tableX0, 2)));
+X0r = find(tableX0(1:size(tableX0, 1), 1) == X0);
+U0s = rmmissing(tableX0(X0r, 3:size(tableX0, 2)));
+Zfinal = tableX0(X0r,2)
+Z0 = Zfinal - tableX0(X0r,2);
 for U0 = U0s
     X1 = X0 - U0;
-    U1s = rmmissing(tableX1(tableX1(1:size(tableX1, 1), 1) == X1, 3:size(tableX1, 2)));
+    X1r = find(tableX1(1:size(tableX1, 1), 1) == X1);
+    U1s = rmmissing(tableX1(X1r, 3:size(tableX1, 2)));
+    Z1 = Zfinal - tableX1(X1r,2);
     for U1 = U1s
         X2 = X1 - U1;
-        U2s = rmmissing(tableX2(tableX2(1:size(tableX2, 1), 1) == X2, 3:size(tableX2, 2)));
+        X2r = find(tableX2(1:size(tableX2, 1), 1) == X2);
+        U2s = rmmissing(tableX2(X2r, 3:size(tableX2, 2)));
+        Z2 = Zfinal - tableX2(X2r,2);
         for U2 = U2s
             X3 = X2 - U2;
-            U3s = rmmissing(tableX3(tableX3(1:size(tableX3, 1), 1) == X3, 3:size(tableX3, 2)));
+            X3r = find(tableX3(1:size(tableX3, 1), 1) == X3);
+            U3s = rmmissing(tableX3(X3r, 3:size(tableX3, 2)));
+            Z3 = Zfinal - tableX3(X3r,2);
             for U3 = U3s
                 X4 = X3 - U3;
                 fprintf('Us:      %i      %i      %i      %i\n', U0, U1, U2, U3)
-                fprintf('Xs: %i----->%i----->%i----->%i----->%i\n\n', X0, X1, X2, X3, X4)
+                fprintf('Xs: %i----->%i----->%i----->%i----->%i\n', X0, X1, X2, X3, X4)
+                fprintf('Ps:  %i       %i       %i       %i       %i\n\n', Z0, Z1, Z2, Z3, Zfinal)
             end
         end
     end
