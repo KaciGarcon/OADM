@@ -2,21 +2,20 @@ clear all
 clc
 
 A = [
-    2 -2 3 1 0
-    2 -2 1 0 1
+    1 2 1 0
+    2 3 0 1
     ]
 
-X = [0 0 0 12 -4].'
+X = [0 0 8 2].'
 
 Q = [
-     2 -2  0  0  0
-    -2  2  0  0  0
-     0  0  2  0  0
-     0  0  0  0  0
-     0  0  0  0  0
+    -2  0  0  0
+     0 -2  0  0
+     0  0  0  0
+     0  0  0  0
     ]
 
-c = [2 -2 0 0 0].'
+c = [2 0 0 0].'
 
 % END OF INPUTTING %
 
@@ -40,22 +39,19 @@ for i = 1:nX
 end
 Dlt
 
-negI = - eye(nX);
-
-
 smplx = zeros(nX+nE, 4*nX+3*nE);
 
 smplx(1:nE,1:nX) = A;
 
-smplx((nE+1):(nX+nE),1:nX) = -Q;
+smplx((nE+1):(nX+nE),1:nX) = Q;
 smplx((nE+1):(nX+nE), (nX+1):(nX+nE)) = A.';
 smplx((nE+1):(nX+nE), (nX+nE+1):(nX+2*nE)) = -A.';
-smplx((nE+1):(nX+nE), (nX+2*nE+1):(2*nX+2*nE)) = negI;
+smplx((nE+1):(nX+nE), (nX+2*nE+1):(2*nX+2*nE)) = -eye(nX);
 smplx((nE+1):(nX+nE), (2*nX+2*nE+1):(3*nX+2*nE)) = Dlt;
 
 values = zeros(nX+nE, 1);
 values(1:nE) = b;
-values((nE+1):(nX+nE)) = c;
+values((nE+1):(nX+nE)) = -c;
 
 mltpl = 1-2*(values < 0);
 smplx = smplx.*mltpl;
